@@ -18,7 +18,7 @@ public class UISlotReel : MonoBehaviour
     [Header("릴 키워드 목록")]
     public string[] keywords;
 
-    private bool spinning = false;
+    public bool spinning = false;
     private float currentSpeed;
     private float itemHeight;
     private int targetIndex;

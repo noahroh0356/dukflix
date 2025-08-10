@@ -51,11 +51,11 @@ public class TitleSlotMachineController : MonoBehaviour
         }
 
         // 슬롯 버튼 초기 텍스트 클리어
-        slotButton1.GetComponentInChildren<TMP_Text>().text = "선택 1";
-        slotButton2.GetComponentInChildren<TMP_Text>().text = "선택 2";
+        slotButton1.GetComponentInChildren<TMP_Text>().text = "item 1";
+        slotButton2.GetComponentInChildren<TMP_Text>().text = "item 2";
     }
 
-    void OnInventoryItemSelected(string itemName)
+    public void OnInventoryItemSelected(string itemName)
     {
         if (string.IsNullOrEmpty(selectedItem1))
         {
