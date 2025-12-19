@@ -9,7 +9,7 @@ public class UISlotReel : MonoBehaviour
 {
     public SlotItem[] slotItems;
     public SlotItem currentSlotItem;
-    public List<string> contentList = new List<string>();
+    public List<string> contentList = new List<string>(); // 여기에 담겨있는 걸 보여줘야함 
     public bool rolling;
     public float maxSlotSpeed = 1000;
     public float slotSpeed;
@@ -21,13 +21,11 @@ public class UISlotReel : MonoBehaviour
     private void Start()
     {
         StartRoll(new string[] {
-            "는(은) 고백이 받고 싶어!",
-": 영원의 기록",
-"인데 아무도 안믿어준다!?",
-"는(은) 딱 질색이니까!",
-"를(을) 쓰러뜨리겠습니다만!?",
-"의 주인이 되어버렸다!",
-"의 사건 파일" });
+        "keywordA",
+        "keywordB",
+        "keywordC",
+        "keywordD",
+ });
     }
 
     public string[] texts;
@@ -37,7 +35,7 @@ public class UISlotReel : MonoBehaviour
         this.texts = texts;
         contentList.AddRange(texts); // 배열에 있는 데이터들을 전부 리스트에 담음
         ShuffleArray(contentList);
-        for (int i = 0; i < slotItems.Length; i++)
+        for (int i = 0; i < slotItems.Length; i++) // 슬롯 아이템 = 슬롯칸
         {
 
             slotItems[i].text.text = contentList[0];
@@ -51,7 +49,7 @@ public class UISlotReel : MonoBehaviour
 
         //코루틴 함수로 5초 후  로그 찍고 + slotSpeed를 점점점 감소 시키게 처리해주세요.
     }
-private void ShuffleArray(List<string> array)
+    private void ShuffleArray(List<string> array)
     {
         for (int i = array.Count - 1; i > 0; i--)
         {
@@ -84,14 +82,19 @@ private void ShuffleArray(List<string> array)
         {
             for (int i = 0; i < slotItems.Length; i++)
             {
-                currentSlotItem.rectTr.anchoredPosition += Vector2.down * slotSpeed * Time.deltaTime;
-                slotItems[0].rectTr.anchoredPosition = new Vector2(0, currentSlotItem.rectTr.anchoredPosition.y + slotItemGap);
+                currentSlotItem.rectTr.anchoredPosition = Vector2.MoveTowards(currentSlotItem.rectTr.anchoredPosition, new Vector2(0,0), slotSpeed * Time.deltaTime) ;                slotItems[0].rectTr.anchoredPosition = new Vector2(0, currentSlotItem.rectTr.anchoredPosition.y + slotItemGap);
                 slotItems[2].rectTr.anchoredPosition = new Vector2(0, currentSlotItem.rectTr.anchoredPosition.y - slotItemGap);
 
 
                 if (currentSlotItem.rectTr.anchoredPosition == new Vector2(0, 0))
                 {
                     Debug.Log("진짜 끝");
+                    KeywordData keywordData = KeywordManager.Instance.GetKeywordData(currentSlotItem.text.text);
+                    int funValue = Random.Range(keywordData.minFun, keywordData.maxFun + 1); // 랜덤 레인지는 최대치에 1을 더해줘야함
+
+                    // currentSlotItem.text.text 
+                    //현재 걸린 키워드 
+                    //currentSlotItem.text.text
                     yield break; //코루틴 함수 종료!
                 }
             }
@@ -120,14 +123,27 @@ private void ShuffleArray(List<string> array)
 
                 currentSlotItem = slotItem;
 
+                if (contentList.Count <= 0)
+                {
+                    contentList.AddRange(texts);
+                    ShuffleArray(contentList);
+                }
+
+                slotItems[0].text.text = contentList[0];
+                contentList.RemoveAt(0);
+
+                //기준이 되는 슬롯 아이템 어느 정도 밑으로 내려왔기 때문에
+                //맨 아래 있는 슬롯 아이템이 맨 위로, 맨 위 슬롯 아이템이 보여주는 내용이 변해야함 
+
                 //여기에서 맨 아래에 있는 슬롯 아이템의 text.text값을 
                 //contentlist리스트에 남아있는 데이터로 설정하면서 데이터를 반복적으로 보여주기
             }
         }
 
-
     }
 }
+
+
 
 //     [Header("릴 UI 컨테이너")]
 //     public RectTransform reelContent; // Vertical Layout Group 자식 컨테이너
